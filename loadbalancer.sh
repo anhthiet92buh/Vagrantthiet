@@ -35,9 +35,9 @@ vrrp_script check_apiserver {
     rise 2
     weight -2
 }
-
+# chu y thay doi MASTER va BACKUP
 vrrp_instance VI_1 {
-    state MASTER
+    state MASTER 
     interface eth1
     virtual_router_id 1
     priority 100
@@ -72,9 +72,9 @@ backend kubernetes-backend
     mode tcp
     option ssl-hello-chk
     balance roundrobin
-        server kmaster1 192.168.0.101:6443 check fall 3 rise 2
-        server kmaster2 192.168.0.102:6443 check fall 3 rise 2
-        server kmaster3 192.168.0.103:6443 check fall 3 rise 2
+        server kmaster1 192.168.0.11.:6443 check fall 3 rise 2
+        server kmaster2 192.168.0.12.:6443 check fall 3 rise 2
+        server kmaster3 192.168.0.13.:6443 check fall 3 rise 2
 
 EOF
 
@@ -103,8 +103,8 @@ echo Download containerd
 # sudo apt install containerd -y
 rm -rf *
 sudo apt install -y apt-transport-https
-wget https://github.com/containerd/containerd/releases/download/v1.7.13/containerd-1.7.13-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.13-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.14/containerd-1.7.14-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.14-linux-amd64.tar.gz
 
 # wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 # echo Tao thu muc cho containerd service
@@ -120,9 +120,10 @@ sudo containerd config default | sudo tee /etc/containerd/config.toml
 echo Start install tools of Kubernetes
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
-
+sudo systemctl enable --now kubelet

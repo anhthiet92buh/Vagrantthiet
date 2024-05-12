@@ -1,0 +1,14 @@
+export name=master1
+export ip=192.168.0.222
+
+export name=master2
+export ip=192.168.0.190
+
+export name=worker1
+export ip=192.168.0.78
+
+export name=lb1
+export ip=192.168.0.91
+
+export name=lb2
+export ip=192.168.0.207

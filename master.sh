@@ -4,6 +4,7 @@ echo The Path of workplace: $PWD
 # sudo apt update && sudo apt upgrade -y
 # echo End of update
 rm -rf *
+
 sudo apt install net-tools -y
 # swapoff -a
 swapoff -a; sed -i '/swap/d' /etc/fstab
@@ -28,8 +29,8 @@ sudo sysctl --system
 
 echo Download containerd
 # sudo apt install containerd -y
-wget https://github.com/containerd/containerd/releases/download/v1.7.13/containerd-1.7.13-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.13-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.14/containerd-1.7.14-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.14-linux-amd64.tar.gz
 
 wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 echo Tao thu muc cho containerd service
@@ -52,19 +53,56 @@ wget https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
 sudo install -m 755 runc.amd64 /usr/local/sbin/runc
 
 echo Start install CNI
-wget https://github.com/containernetworking/plugins/releases/download/v1.4.0/cni-plugins-linux-amd64-v1.4.0.tgz
+wget https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz
 mkdir -p /opt/cni/bin
-tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.4.0.tgz
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.4.1.tgz
+
+# cat << EOF | sudo tee /etc/cni/net.d/10-containerd-net.conflist
+# {
+#   "cniVersion": "1.4.1",
+#   "name": "containerd-net",
+#   "plugins": [
+#     {
+#       "type": "bridge",
+#       "bridge": "cni0",
+#       "isGateway": true,
+#       "ipMasq": true,
+#       "promiscMode": true,
+#       "ipam": {
+#         "type": "host-local",
+#         "ranges": [
+#           [{
+#             "subnet": "10.88.0.0/16"
+#           }],
+#           [{
+#             "subnet": "2001:4860:4860::/64"
+#           }]
+#         ],
+#         "routes": [
+#           { "dst": "0.0.0.0/0" },
+#           { "dst": "::/0" }
+#         ]
+#       }
+#     },
+#     {
+#       "type": "portmap",
+#       "capabilities": {"portMappings": true}
+#     }
+#   ]
+# }
+# EOF
 
 
 echo Start install tools of Kubernetes
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
+sudo systemctl enable --now kubelet
 
 sudo snap install helm --classic
 
