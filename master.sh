@@ -29,8 +29,8 @@ sudo sysctl --system
 
 echo Download containerd
 # sudo apt install containerd -y
-wget https://github.com/containerd/containerd/releases/download/v1.7.14/containerd-1.7.14-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.14-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.20-linux-amd64.tar.gz
 
 wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 echo Tao thu muc cho containerd service
@@ -49,13 +49,13 @@ echo -------------------------------------------------
 # cat /etc/containerd/config.toml
 
 echo Start install runC
-wget https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
+wget https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.amd64
 sudo install -m 755 runc.amd64 /usr/local/sbin/runc
 
 echo Start install CNI
-wget https://github.com/containernetworking/plugins/releases/download/v1.4.1/cni-plugins-linux-amd64-v1.4.1.tgz
+wget https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-amd64-v1.5.1.tgz
 mkdir -p /opt/cni/bin
-tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.4.1.tgz
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.5.1.tgz
 
 # cat << EOF | sudo tee /etc/cni/net.d/10-containerd-net.conflist
 # {

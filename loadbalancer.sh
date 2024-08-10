@@ -6,8 +6,8 @@ sudo apt install keepalived haproxy -y
 echo https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#options-for-software-load-balancing
 
 export APISERVER_DEST_PORT=6443
-export APISERVER_VIP="192.168.0.100"
-
+#export APISERVER_VIP="192.168.0.100"
+export APISERVER_VIP="192.168.1.190"
 # rm -rf /etc/keepalived/check_apiserver.sh
 cat >> /etc/keepalived/check_apiserver.sh <<EOF
 #!/bin/sh
@@ -17,7 +17,7 @@ errorExit() {
     exit 1
 }
 
-curl --silent --max-time 2 --insecure https://localhost :${APISERVER_DEST_PORT}/ -o /dev/null || errorExit "Error GET https://localhost:${APISERVER_DEST_PORT}/"
+curl --silent --max-time 2 --insecure https://localhost:${APISERVER_DEST_PORT}/ -o /dev/null || errorExit "Error GET https://localhost:${APISERVER_DEST_PORT}/"
 if ip addr | grep -q ${APISERVER_VIP}; then
     curl --silent --max-time 2 --insecure https://${APISERVER_VIP}:${APISERVER_DEST_PORT}/ -o /dev/null || errorExit "Error GET https://${APISERVER_VIP}:${APISERVER_DEST_PORT}/"
 fi
@@ -26,6 +26,7 @@ EOF
 sudo chmod +x /etc/keepalived/check_apiserver.sh
 
 # rm -rf /etc/keepalived/keepalived.conf
+# Change Master to Backup in loadbalancer2
 cat >> /etc/keepalived/keepalived.conf <<EOF
 vrrp_script check_apiserver {
     script "/etc/keepalived/check_apiserver.sh"
@@ -47,7 +48,7 @@ vrrp_instance VI_1 {
         auth_pass mysecret
     }
     virtual_ipaddress {
-        192.168.0.100
+        192.168.1.190
     }
     track_script {
         check_apiserver
@@ -72,9 +73,9 @@ backend kubernetes-backend
     mode tcp
     option ssl-hello-chk
     balance roundrobin
-        server kmaster1 192.168.0.11.:6443 check fall 3 rise 2
-        server kmaster2 192.168.0.12.:6443 check fall 3 rise 2
-        server kmaster3 192.168.0.13.:6443 check fall 3 rise 2
+        server kmaster1 192.168.1.191:6443 check fall 3 rise 2
+        server kmaster2 192.168.1.192:6443 check fall 3 rise 2
+        server kmaster3 192.168.1.193:6443 check fall 3 rise 2
 
 EOF
 
@@ -103,8 +104,8 @@ echo Download containerd
 # sudo apt install containerd -y
 rm -rf *
 sudo apt install -y apt-transport-https
-wget https://github.com/containerd/containerd/releases/download/v1.7.14/containerd-1.7.14-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.14-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.20-linux-amd64.tar.gz
 
 # wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 # echo Tao thu muc cho containerd service
