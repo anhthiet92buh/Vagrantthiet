@@ -3,7 +3,7 @@ echo The Path of workplace: $PWD
 # echo Start Apt update va upgrade
 # sudo apt update && sudo apt upgrade -y
 # echo End of update
-rm -rf *
+# rm -rf *
 
 sudo apt install net-tools -y
 # swapoff -a
@@ -29,8 +29,8 @@ sudo sysctl --system
 
 echo Download containerd
 # sudo apt install containerd -y
-wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.20-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.19/containerd-1.7.19-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.19-linux-amd64.tar.gz
 
 wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 echo Tao thu muc cho containerd service
@@ -49,13 +49,13 @@ echo -------------------------------------------------
 # cat /etc/containerd/config.toml
 
 echo Start install runC
-wget https://github.com/opencontainers/runc/releases/download/v1.1.13/runc.amd64
+wget https://github.com/opencontainers/runc/releases/download/v1.1.12/runc.amd64
 sudo install -m 755 runc.amd64 /usr/local/sbin/runc
 
 echo Start install CNI
-wget https://github.com/containernetworking/plugins/releases/download/v1.5.1/cni-plugins-linux-amd64-v1.5.1.tgz
+wget https://github.com/containernetworking/plugins/releases/download/v1.5.0/cni-plugins-linux-amd64-v1.5.0.tgz
 mkdir -p /opt/cni/bin
-tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.5.1.tgz
+tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.5.0.tgz
 
 # cat << EOF | sudo tee /etc/cni/net.d/10-containerd-net.conflist
 # {
@@ -97,8 +97,8 @@ echo Start install tools of Kubernetes
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 sudo mkdir -p -m 755 /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl

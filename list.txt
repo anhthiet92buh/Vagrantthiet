@@ -1,3 +1,0 @@
-bootstrap.sh
-list.txt
-Vagrantfile

@@ -1,18 +1,22 @@
-export name=master1
-export ip=192.168.0.222
+kubectl get events --all-namespaces
 
-export name=master2
-export ip=192.168.0.190
+netplan set ethernets.enp0s3.addresses=[192.168.1.xxx/24]
+netplan set ethernets.enp0s3.dhcp4=false
+netplan set ethernets.enp0s3.nameservers.addresses=[192.168.1.1, 8.8.8.8, 8.8.4.4]
+netplan apply
 
-export name=worker1
-export ip=192.168.0.78
-
-export name=lb1
-export ip=192.168.0.91
-
-export name=lb2
-export ip=192.168.0.207
-
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s3:
+      addresses:
+      - 192.168.1.201/24
+      nameservers: 
+        addresses: [192.168.1.1, 8.8.8.8, 8.8.4.4]
+      routes:
+        - to: default
+          via: 192.168.1.1
 
 m1=kmaster1@192.168.1.201
 m2=kmaster2@192.168.1.202

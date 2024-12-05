@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -rf *
+# rm -rf *
 sudo apt update && apt upgrade -y
 sudo apt install keepalived haproxy -y
 
@@ -7,7 +7,7 @@ echo https://github.com/kubernetes/kubeadm/blob/main/docs/ha-considerations.md#o
 
 export APISERVER_DEST_PORT=6443
 #export APISERVER_VIP="192.168.0.100"
-export APISERVER_VIP="192.168.1.190"
+export APISERVER_VIP="192.168.1.200"
 # rm -rf /etc/keepalived/check_apiserver.sh
 cat >> /etc/keepalived/check_apiserver.sh <<EOF
 #!/bin/sh
@@ -48,7 +48,7 @@ vrrp_instance VI_1 {
         auth_pass mysecret
     }
     virtual_ipaddress {
-        192.168.1.190
+        192.168.1.200
     }
     track_script {
         check_apiserver
@@ -56,7 +56,7 @@ vrrp_instance VI_1 {
 }
 EOF
 
-systemctl enable --now keepalived
+    systemctl enable --now keepalived
 
 # rm -rf /etc/haproxy/haproxy.cfg 
 cat >> /etc/haproxy/haproxy.cfg <<EOF
@@ -73,9 +73,9 @@ backend kubernetes-backend
     mode tcp
     option ssl-hello-chk
     balance roundrobin
-        server kmaster1 192.168.1.191:6443 check fall 3 rise 2
-        server kmaster2 192.168.1.192:6443 check fall 3 rise 2
-        server kmaster3 192.168.1.193:6443 check fall 3 rise 2
+        server kmaster1 $ipm1:6443 check fall 3 rise 2
+        server kmaster2 $ipm2:6443 check fall 3 rise 2
+        server kmaster3 $ipm3:6443 check fall 3 rise 2
 
 EOF
 
@@ -102,10 +102,10 @@ sysctl --system
 
 echo Download containerd
 # sudo apt install containerd -y
-rm -rf *
+# rm -rf *
 sudo apt install -y apt-transport-https
-wget https://github.com/containerd/containerd/releases/download/v1.7.20/containerd-1.7.20-linux-amd64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.20-linux-amd64.tar.gz
+wget https://github.com/containerd/containerd/releases/download/v1.7.19/containerd-1.7.19-linux-amd64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.19-linux-amd64.tar.gz
 
 # wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
 # echo Tao thu muc cho containerd service
@@ -122,8 +122,8 @@ echo Start install tools of Kubernetes
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 sudo mkdir -p -m 755 /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl

@@ -6,19 +6,19 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 # ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 VAGRANTFILE_API_VERSION = "2"
 
-VITUAL_IP         ="192.168.1.200"
-KMASTER1_IP       ="192.168.1.201"
-KMASTER2_IP       ="192.168.1.202"
-KMASTER3_IP       ="192.168.1.203"
+VITUAL_IP         ="192.168.1.190"
+KMASTER1_IP       ="192.168.1.191"
+KMASTER2_IP       ="192.168.1.192"
+KMASTER3_IP       ="192.168.1.193"
 
-KWORKER1_IP       ="192.168.1.204"
-KWORKER2_IP       ="192.168.1.205"
-KWORKER3_IP       ="192.168.1.206"
+KWORKER1_IP       ="192.168.1.194"
+KWORKER2_IP       ="192.168.1.195"
+KWORKER3_IP       ="192.168.1.196"
 
-LOADBALANCER1_IP  ="192.168.1.207"
-LOADBALANCER2_IP  ="192.168.1.208"
+# LOADBALANCER1_IP  ="192.168.1.207"
+# LOADBALANCER2_IP  ="192.168.1.208"
 
-SQL_IP            ="192.168.1.209"
+# SQL_IP            ="192.168.1.209"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "bootstrap.sh"
@@ -113,49 +113,49 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       end
   end
 
-  #Loadbalancer1
-  config.vm.define "loadbalancer1" do |lb|
-    lb.vm.box               = "generic/ubuntu2304"
-    lb.vm.box_check_update  = false
-    lb.vm.hostname          = "loadbalancer1.example.com"
-    lb.vm.network "public_network", ip: LOADBALANCER1_IP
-    lb.vm.provider :virtualbox do |v|
-      v.name   = "loadbalancer1"
-      v.memory = 4096
-      v.cpus   = 8
-      v.gui = false
-      end
-    lb.vm.provision "shell", path: "loadbalancer.sh"
-  end
+  # #Loadbalancer1
+  # config.vm.define "loadbalancer1" do |lb|
+  #   lb.vm.box               = "generic/ubuntu2304"
+  #   lb.vm.box_check_update  = false
+  #   lb.vm.hostname          = "loadbalancer1.example.com"
+  #   lb.vm.network "public_network", ip: LOADBALANCER1_IP
+  #   lb.vm.provider :virtualbox do |v|
+  #     v.name   = "loadbalancer1"
+  #     v.memory = 4096
+  #     v.cpus   = 8
+  #     v.gui = false
+  #     end
+  #   lb.vm.provision "shell", path: "loadbalancer.sh"
+  # end
 
-  #Loadbalancer2
-  config.vm.define "loadbalancer2" do |lb|
-    lb.vm.box               = "generic/ubuntu2304"
-    lb.vm.box_check_update  = false
-    lb.vm.hostname          = "loadbalancer2.example.com"
-    lb.vm.network "public_network", ip: LOADBALANCER2_IP
-    lb.vm.provider :virtualbox do |v|
-      v.name   = "loadbalancer2"
-      v.memory = 4096
-      v.cpus   = 8
-      v.gui = false
-      end
-    lb.vm.provision "shell", path: "loadbalancer.sh"
-  end
+  # #Loadbalancer2
+  # config.vm.define "loadbalancer2" do |lb|
+  #   lb.vm.box               = "generic/ubuntu2304"
+  #   lb.vm.box_check_update  = false
+  #   lb.vm.hostname          = "loadbalancer2.example.com"
+  #   lb.vm.network "public_network", ip: LOADBALANCER2_IP
+  #   lb.vm.provider :virtualbox do |v|
+  #     v.name   = "loadbalancer2"
+  #     v.memory = 4096
+  #     v.cpus   = 8
+  #     v.gui = false
+  #     end
+  #   lb.vm.provision "shell", path: "loadbalancer.sh"
+  # end
 
-  #Test Postgresql
-  config.vm.define "sql1" do |testnode|
-    testnode.vm.box               = "generic/ubuntu2304"
-    testnode.vm.box_check_update  = false
-    testnode.vm.hostname          = "sql1.example.com"
-    testnode.vm.network "public_network", ip: SQL_IP
-    testnode.vm.provider :virtualbox do |v|
-      v.name   = "sql1"
-      v.memory = 4096
-      v.cpus   = 8
-      v.gui = false
-    end
-  end
+  # #Test Postgresql
+  # config.vm.define "sql1" do |testnode|
+  #   testnode.vm.box               = "generic/ubuntu2304"
+  #   testnode.vm.box_check_update  = false
+  #   testnode.vm.hostname          = "sql1.example.com"
+  #   testnode.vm.network "public_network", ip: SQL_IP
+  #   testnode.vm.provider :virtualbox do |v|
+  #     v.name   = "sql1"
+  #     v.memory = 4096
+  #     v.cpus   = 8
+  #     v.gui = false
+  #   end
+  # end
 
   # # Load Balancer Nodes
   # LoadBalancerCount = 2
