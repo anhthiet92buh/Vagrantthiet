@@ -106,7 +106,7 @@ sudo systemctl enable --now kubelet
 
 sudo snap install helm --classic
 
-echo "Chu y: Cgroups true in config.toml va "
+echo "Chu y: Cgroups true in /etc/containerd/config.toml va helm /root/.cache/helm/repository"
 
 # mkdir -p $HOME/.kube
 # sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
